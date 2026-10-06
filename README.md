@@ -47,12 +47,22 @@ your username, and keeps it on reinstall. To keep it in your checkout instead, p
 `local.lua` next to `install.sh` (it is git-ignored) and the installer will use that.
 
 - Monitors: copy the `hl.monitor` blocks from your Hyprland config.
-- `CAELESTIA_GREETER_USER`: user to log in.
+- `CAELESTIA_GREETER_USER`: user preselected until someone has logged in (after that, the last user is remembered).
 - `CAELESTIA_GREETER_MONITOR`: monitor that shows the login card (others show the wallpaper).
   Falls back to the first screen if it isn't connected.
 - `CAELESTIA_GREETER_SESSION`: session command (default `start-hyprland`).
 
 Keyboard layout and other Hyprland options are in `hyprland.lua`.
+
+## Users
+
+All accounts with a UID of 1000 or more and a real login shell are listed. With more than
+one, switch with ←/→, the arrows, or by clicking the avatar. The last user to log in is
+preselected (stored in `/var/cache/caelestia-greeter/last-user`).
+
+Avatars come from `/var/lib/AccountsService/icons/<user>` (what GNOME/KDE settings write),
+falling back to the synced `~/.face` for the user running the theme sync. Everyone sees that
+user's colours and wallpaper on the login screen.
 
 ## Preview without logging out
 
@@ -62,11 +72,14 @@ CAELESTIA_GREETER_HOME=/var/lib/caelestia-greeter-sync CAELESTIA_GREETER_CACHE=/
 ```
 
 Opens the installed greeter in a nested Hyprland window. Without greetd the password is
-checked against your own account and the session launch is only logged.
+checked against your own account and the session launch is only logged. Set
+`CAELESTIA_GREETER_PASSWD` to a fake passwd file to preview the user switcher.
 
 ## Limitations
 
-- Single user, no session picker.
+- No session picker.
+- One theme for the login screen (from the user running the sync).
+- No "switch user" while logged in: greetd runs one session at a time.
 - No fingerprint / face unlock.
 
 ## Credits

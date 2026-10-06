@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Greetd
 import Quickshell.Services.Pam
 import qs.modules.lock
@@ -13,10 +14,38 @@ import qs.modules.lock
 Scope {
     id: root
 
-    required property string user
     required property list<string> sessionCommand
+    // Preselected when no previous login is remembered
+    property string defaultUser
 
     readonly property bool testMode: !Greetd.available
+
+    // Login-capable accounts from /etc/passwd: [{ name, fullName }]
+    property var users: []
+    property int userIndex: 0
+    readonly property var currentUser: users[userIndex] ?? null
+    readonly property string user: currentUser?.name ?? ""
+    property string lastUser
+
+    function selectUser(offset: int): void {
+        if (users.length < 2 || passwd.active || succeeded)
+            return;
+        userIndex = (userIndex + offset + users.length) % users.length;
+        buffer = "";
+        passwd.message = "";
+        state = Pam.None;
+    }
+
+    function pickInitialUser(): void {
+        for (const name of [lastUser, defaultUser]) {
+            const i = users.findIndex(u => u.name === name);
+            if (i >= 0) {
+                userIndex = i;
+                return;
+            }
+        }
+        userIndex = 0;
+    }
 
     readonly property QtObject passwd: QtObject {
         property bool active
@@ -55,7 +84,9 @@ Scope {
         if (passwd.active || succeeded)
             return;
 
-        if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+        if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
+            selectUser(event.key === Qt.Key_Left ? -1 : 1);
+        } else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
             start();
         } else if (event.key === Qt.Key_Backspace) {
             if (event.modifiers & Qt.ControlModifier)
@@ -68,7 +99,7 @@ Scope {
     }
 
     function start(): void {
-        if (passwd.active || succeeded)
+        if (passwd.active || succeeded || !user)
             return;
 
         passwd.active = true;
@@ -90,6 +121,7 @@ Scope {
 
     // Called by the surface once the exit animation is done
     function launch(): void {
+        lastUserFile.setText(user);
         if (testMode) {
             console.info(`[greeter] test mode: would launch ${JSON.stringify(sessionCommand)} as ${user}`);
             Qt.quit();
@@ -127,9 +159,41 @@ Scope {
         target: root.testMode ? null : Greetd
     }
 
+    FileView {
+        // CAELESTIA_GREETER_PASSWD is only for previewing with fake accounts
+        path: Quickshell.env("CAELESTIA_GREETER_PASSWD") || "/etc/passwd"
+        blockLoading: true
+        onLoaded: {
+            const nologin = /(nologin|false)$/;
+            root.users = text().split("\n").map(l => l.split(":")).filter(f => {
+                const uid = parseInt(f[2]);
+                return f.length >= 7 && uid >= 1000 && uid < 60000 && !nologin.test(f[6]);
+            }).map(f => ({
+                        name: f[0],
+                        fullName: f[4].split(",")[0] || f[0]
+                    }));
+            root.pickInitialUser();
+        }
+    }
+
+    // Remembers who logged in last; lives in the greeter's writable cache dir
+    FileView {
+        id: lastUserFile
+
+        path: `${Quickshell.env("XDG_CACHE_HOME") || "/var/cache/caelestia-greeter"}/last-user`
+        blockLoading: true
+        blockWrites: true
+        printErrors: false
+        onLoaded: {
+            root.lastUser = text().trim();
+            root.pickInitialUser();
+        }
+    }
+
     PamContext {
         id: testPam
 
+        user: root.user
         config: "passwd"
         configDirectory: Quickshell.shellPath("assets/pam.d")
 

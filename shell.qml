@@ -9,7 +9,7 @@ import Quickshell
 
 // Caelestia-styled greetd greeter.
 // Env:
-//   CAELESTIA_GREETER_USER     user to log in (set in local.lua)
+//   CAELESTIA_GREETER_USER     user preselected on first boot (later: last user to log in)
 //   CAELESTIA_GREETER_MONITOR  monitor that shows the login box (default: first screen)
 //   CAELESTIA_GREETER_SESSION  session command, space separated (default: start-hyprland)
 ShellRoot {
@@ -27,7 +27,7 @@ ShellRoot {
     GreetAuth {
         id: auth
 
-        user: Quickshell.env("CAELESTIA_GREETER_USER") ?? ""
+        defaultUser: Quickshell.env("CAELESTIA_GREETER_USER") ?? ""
         sessionCommand: (Quickshell.env("CAELESTIA_GREETER_SESSION") || "start-hyprland").split(" ")
     }
 

@@ -241,7 +241,7 @@ PanelWindow {
             opacity: 0
             scale: 0
 
-            Center {
+            GreeterCenter {
                 id: center
 
                 Layout.alignment: Qt.AlignHCenter

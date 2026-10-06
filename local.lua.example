@@ -11,7 +11,8 @@
 --     scale    = 1,
 -- })
 
--- User to log in. install.sh fills this in with the user who ran sudo.
+-- User preselected until someone has logged in; after that the last user is remembered.
+-- install.sh fills this in with the user who ran sudo.
 hl.env("CAELESTIA_GREETER_USER", "@USER@")
 
 -- Monitor that shows the login card (others show the wallpaper). Defaults to the first one.

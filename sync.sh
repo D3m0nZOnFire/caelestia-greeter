@@ -33,4 +33,7 @@ else
     rm -f "$dst/.face"
 fi
 
+# Lets the greeter show this user's ~/.face
+id -un > "$dst/user"
+
 chmod -R a+rX "$dst"
