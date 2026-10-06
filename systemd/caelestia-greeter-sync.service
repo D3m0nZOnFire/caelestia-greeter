@@ -1,0 +1,6 @@
+[Unit]
+Description=Sync Caelestia theme to the greetd greeter
+
+[Service]
+Type=oneshot
+ExecStart=/etc/caelestia-greeter/sync.sh

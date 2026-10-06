@@ -1,0 +1,12 @@
+[Unit]
+Description=Watch Caelestia theme files for the greetd greeter
+
+[Path]
+PathChanged=%h/.local/state/caelestia/scheme.json
+PathChanged=%h/.local/state/caelestia/wallpaper/path.txt
+PathChanged=%h/.config/caelestia/shell.json
+PathChanged=%h/.face
+Unit=caelestia-greeter-sync.service
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+[terminal]
+vt = 1
+
+[default_session]
+command = "env XDG_CACHE_HOME=/var/cache/caelestia-greeter XDG_DATA_HOME=/var/cache/caelestia-greeter/data XDG_STATE_HOME=/var/cache/caelestia-greeter/state start-hyprland -- --config /etc/caelestia-greeter/hyprland.lua"
+user = "greeter"
