@@ -51,6 +51,7 @@ your username, and keeps it on reinstall. To keep it in your checkout instead, p
 - `CAELESTIA_GREETER_MONITOR`: monitor that shows the login card (others show the wallpaper).
   Falls back to the first screen if it isn't connected.
 - `CAELESTIA_GREETER_SESSION`: session command (default `start-hyprland`).
+- `CAELESTIA_GREETER_AVATAR_SHAPE`: avatar shape, a [Material shape](https://m3.material.io/styles/shape/overview) name such as `Cookie9Sided` (default) or `Square`. Give several, comma separated, to pick one at random on each start.
 
 Keyboard layout and other Hyprland options are in `hyprland.lua`.
 

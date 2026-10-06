@@ -25,6 +25,11 @@ ColumnLayout {
     readonly property string name: auth.currentUser?.name ?? ""
     readonly property color bgColour: Colours.tPalette.m3surfaceContainerHighest
 
+    // CAELESTIA_GREETER_AVATAR_SHAPE: MaterialShape name(s), comma separated; one is picked
+    // at random each time the greeter starts
+    readonly property var shapeChoices: (Quickshell.env("CAELESTIA_GREETER_AVATAR_SHAPE") ?? "").split(",").map(n => n.trim()).filter(n => MaterialShape[n] !== undefined)
+    readonly property int avatarShape: shapeChoices.length ? MaterialShape[shapeChoices[Math.floor(Math.random() * shapeChoices.length)]] : MaterialShape.Cookie9Sided
+
     spacing: Tokens.spacing.large * centerScale
 
     RowLayout {
@@ -53,7 +58,7 @@ ColumnLayout {
                 anchors.centerIn: parent
                 implicitSize: avatar.implicitWidth
 
-                shape: MaterialShape.ClamShell
+                shape: root.avatarShape
                 color: Qt.alpha(root.bgColour, 1)
                 opacity: root.bgColour.a
                 layer.enabled: true

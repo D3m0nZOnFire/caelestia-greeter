@@ -20,3 +20,7 @@ hl.env("CAELESTIA_GREETER_USER", "@USER@")
 
 -- Session to start after login.
 -- hl.env("CAELESTIA_GREETER_SESSION", "start-hyprland")
+
+-- Avatar shape: a MaterialShape name, or several separated by commas to pick one at random
+-- on each start (default Cookie9Sided). E.g. Square, Cookie7Sided, Cookie12Sided, Sunny, Gem.
+-- hl.env("CAELESTIA_GREETER_AVATAR_SHAPE", "Cookie7Sided,Cookie9Sided,Cookie12Sided")
