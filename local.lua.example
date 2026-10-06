@@ -1,0 +1,21 @@
+-- Machine-specific greeter settings, loaded by hyprland.lua.
+-- install.sh creates /etc/caelestia-greeter/local.lua from this file (or from ./local.lua
+-- if present) and keeps it across reinstalls.
+
+-- Monitors: copy the hl.monitor blocks from your own Hyprland config.
+-- Without any, Hyprland picks preferred modes automatically.
+-- hl.monitor({
+--     output   = "DP-1",
+--     mode     = "2560x1440@144",
+--     position = "0x0",
+--     scale    = 1,
+-- })
+
+-- User to log in. install.sh fills this in with the user who ran sudo.
+hl.env("CAELESTIA_GREETER_USER", "@USER@")
+
+-- Monitor that shows the login card (others show the wallpaper). Defaults to the first one.
+-- hl.env("CAELESTIA_GREETER_MONITOR", "DP-1")
+
+-- Session to start after login.
+-- hl.env("CAELESTIA_GREETER_SESSION", "start-hyprland")

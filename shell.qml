@@ -2,13 +2,14 @@
 //@ pragma DefaultEnv QS_DROP_EXPENSIVE_FONTS=1
 //@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
 
+import "modules"
 import "modules/greeter"
 import QtQuick
 import Quickshell
 
 // Caelestia-styled greetd greeter.
 // Env:
-//   CAELESTIA_GREETER_USER     user to log in (default: ivo)
+//   CAELESTIA_GREETER_USER     user to log in (set in local.lua)
 //   CAELESTIA_GREETER_MONITOR  monitor that shows the login box (default: first screen)
 //   CAELESTIA_GREETER_SESSION  session command, space separated (default: start-hyprland)
 ShellRoot {
@@ -20,10 +21,13 @@ ShellRoot {
 
     settings.watchFiles: false
 
+    // Caelestia's bundled UI font (the lock widgets measure text with it)
+    GSFLoader {}
+
     GreetAuth {
         id: auth
 
-        user: Quickshell.env("CAELESTIA_GREETER_USER") || "ivo"
+        user: Quickshell.env("CAELESTIA_GREETER_USER") ?? ""
         sessionCommand: (Quickshell.env("CAELESTIA_GREETER_SESSION") || "start-hyprland").split(" ")
     }
 

@@ -1,32 +1,18 @@
 -- Minimal Hyprland session used by greetd to host the Caelestia greeter.
--- Monitors are kept in sync with ~/.config/hypr/hyprland-gui.lua by hand.
+-- Monitors and the login user live in local.lua (see local.lua.example).
 
 local dir   = os.getenv("CAELESTIA_GREETER_DIR") or "/etc/caelestia-greeter"
 local home  = os.getenv("CAELESTIA_GREETER_HOME") or "/var/lib/caelestia-greeter-sync"
 local cache = os.getenv("CAELESTIA_GREETER_CACHE") or "/var/cache/caelestia-greeter"
 
-hl.monitor({
-    output = "desc:GIGA-BYTE TECHNOLOGY CO. LTD. M27Q X 24050B001105",
-    mode = "2560x1440@144.00Hz",
-    position = "1800x1770",
-    scale = 1,
-    cm = "srgb",
-})
-hl.monitor({
-    output = "desc:LG Electronics LG ULTRAGEAR+ 401NTTQ31481",
-    mode = "3840x2160@60.00Hz",
-    position = "0x0",
-    scale = 1.2,
-    transform = 1,
-    cm = "srgb",
-})
-
 hl.env("QT_QPA_PLATFORM", "wayland")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 hl.env("XCURSOR_SIZE", "24")
-hl.env("CAELESTIA_GREETER_MONITOR", "DP-3")  -- shows the login card
-hl.env("CAELESTIA_GREETER_USER", "ivo")
 hl.env("CAELESTIA_GREETER_SESSION", "start-hyprland")
+
+-- Machine-specific settings (monitors, user); may override the above
+local ok, err = pcall(dofile, dir .. "/local.lua")
+if not ok then print("caelestia-greeter: local.lua not loaded: " .. tostring(err)) end
 
 hl.config({
     input = {

@@ -4,6 +4,8 @@ A [greetd](https://sr.ht/~kennylevinsen/greetd/) login screen that looks like th
 [Caelestia](https://github.com/caelestia-dots/shell) lock screen: clock, date, avatar and
 password field on your blurred wallpaper, in your current colour scheme.
 
+<p align="center"><img src="docs/screenshot.jpg" alt="Greeter screenshot" width="480"></p>
+
 It runs Quickshell inside a minimal Hyprland session. The greeter reuses Caelestia's own
 lock-screen widgets from the installed `caelestia-shell` package, swapping PAM for greetd.
 
@@ -32,19 +34,25 @@ From a TTY (Ctrl+Alt+F2): `sudo systemctl disable greetd && sudo systemctl enabl
 | File | Purpose |
 | --- | --- |
 | `shell.qml`, `modules/greeter/` | Greeter UI. `GreetAuth.qml` mimics Caelestia's `Pam.qml` so the lock widgets work unchanged; without greetd it falls back to a PAM check so you can preview it. |
-| `hyprland.lua` | Minimal Hyprland config for the greeter session (monitors, no animations). Exits the compositor when the greeter quits. |
+| `hyprland.lua`, `local.lua.example` | Minimal Hyprland config for the greeter session; machine settings come from `local.lua`. Exits the compositor when the greeter quits. |
 | `sync.sh`, `systemd/` | User path unit that mirrors your scheme, wallpaper, Caelestia config and `~/.face` to `/var/lib/caelestia-greeter-sync`, which the greeter uses as `HOME`. |
 | `greetd/config.toml` | greetd config. Gives Hyprland writable cache/state dirs, since the `greeter` user's home is `/`. |
 | `install.sh` | Builds `/etc/caelestia-greeter` from the installed Caelestia shell plus this overlay; installs greetd config and PAM (with gnome-keyring unlock). |
 
 ## Configuration
 
-Set in `hyprland.lua`:
+Machine-specific settings go in `/etc/caelestia-greeter/local.lua` (see
+[`local.lua.example`](local.lua.example)). The installer creates it on first install with
+your username, and keeps it on reinstall. To keep it in your checkout instead, put a
+`local.lua` next to `install.sh` (it is git-ignored) and the installer will use that.
 
-- Monitors: copy your `hl.monitor` blocks (kept by hand, not synced).
+- Monitors: copy the `hl.monitor` blocks from your Hyprland config.
+- `CAELESTIA_GREETER_USER`: user to log in.
 - `CAELESTIA_GREETER_MONITOR`: monitor that shows the login card (others show the wallpaper).
-- `CAELESTIA_GREETER_USER`: user to log in (default `ivo`).
+  Falls back to the first screen if it isn't connected.
 - `CAELESTIA_GREETER_SESSION`: session command (default `start-hyprland`).
+
+Keyboard layout and other Hyprland options are in `hyprland.lua`.
 
 ## Preview without logging out
 
@@ -60,6 +68,12 @@ checked against your own account and the session launch is only logged.
 
 - Single user, no session picker.
 - No fingerprint / face unlock.
+
+## Credits
+
+All of the visual design and the lock-screen widgets come from
+[caelestia-dots/shell](https://github.com/caelestia-dots/shell). This project only adapts
+them for greetd. Built on [Quickshell](https://quickshell.org) and [greetd](https://sr.ht/~kennylevinsen/greetd/).
 
 ## License
 
